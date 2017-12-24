@@ -62,6 +62,7 @@ var config = JSON.parse(fs.readFileSync("src/config.json"));
 
 // Create the browser window and all of the Other Fun stuff. (On Call!)
 function createWindow () {
+
   win = new BrowserWindow({
 		width: 1400, height: 1000,
 		backgroundColor: '#2e2c29',
@@ -88,6 +89,13 @@ function createWindow () {
     // when you should delete the corresponding element.
     win = null
   });
+
+  // Set Reload Time when Set in Config
+  if(config.reload_time !== undefined){
+    setInterval(function(){
+      win.webContents.reload();
+    }, config.reload_time*1000);
+  }
 }
 
 // This method will be called when Electron has finished Setup.
