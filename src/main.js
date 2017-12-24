@@ -6,6 +6,7 @@ var events = require('events');
 
 
 var config = JSON.parse(fs.readFileSync("src/config.json"));
+var reloadTime; // Setup of the Refresh Time
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -17,12 +18,6 @@ var config = JSON.parse(fs.readFileSync("src/config.json"));
       {
         label: 'File',
         submenu: [
-          {
-            label: 'Reload',
-            click() {
-                win.webContents.reload();
-            }
-          },
           {
             label: 'Clear Login',
             click() {
@@ -49,6 +44,23 @@ var config = JSON.parse(fs.readFileSync("src/config.json"));
         click() {
             win.loadURL(config.google_url);
         }
+      },
+      {
+        label: 'Refresh',
+        submenu: [
+          {
+            label: 'Start Timer',
+            click(){
+              setRefresh();
+            }
+          },
+          {
+            label: 'Stop Timer',
+            click(){
+              stopRefresh();
+            }
+          }
+        ]
       }
 
     ]));
@@ -91,11 +103,18 @@ function createWindow () {
   });
 
   // Set Reload Time when Set in Config
+  setRefresh();
+}
+
+function setRefresh(){
   if(config.reload_time !== undefined){
-    setInterval(function(){
+    reloadTime = setInterval(function(){
       win.webContents.reload();
     }, config.reload_time*1000);
   }
+}
+function stopRefresh(){
+  clearInterval(reloadTime);
 }
 
 // This method will be called when Electron has finished Setup.
